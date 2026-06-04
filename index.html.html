@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>코스모스 제네시스: 우주 탄생 타이쿤</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons (SVG/Webfont) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+    
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #03000a;
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+    
+    .font-orbitron {
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    /* Glow effects */
+    .glow-energy {
+      box-shadow: 0 0 15px rgba(147, 51, 234, 0.5);
+    }
+    .glow-star {
+      box-shadow: 0 0 25px rgba(253, 224, 71, 0.6);
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090514;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4c1d95;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6d28d9;
+    }
+
+    /* Cosmic background dust animation */
+    @keyframes drift {
+      from { transform: translateY(0px) rotate(0deg); }
+      to { transform: translateY(-1000px) rotate(360deg); }
+    }
+    .space-dust {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.3;
+    }
+
+    /* Floating bubble effect for atoms/particles */
+    @keyframes float-particle {
+      0% { transform: translateY(0) scale(1); opacity: 0.8; }
+      50% { transform: translateY(-15px) scale(1.05); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 0.8; }
+    }
+    .float-anim {
+      animation: float-particle 4s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="relative min-h-screen flex flex-col justify-between">
+
+  <!-- Background Dust -->
+  <div class="space-dust" id="dustContainer"></div>
+
+  <!-- Main Container -->
+  <div class="relative z-10 flex flex-col min-h-screen">
+    
+    <!-- Top Nav Header -->
+    <header class="border-b border-purple-900/40 bg-black/40 backdrop-blur-md px-4 py-3 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-tr from-purple-600 to-pink-500 rounded-full flex items-center justify-center glow-energy animate-pulse">
+            <i class="fa-solid fa-circle-radiation text-white text-lg"></i>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold font-orbitron tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-amber-300">
+              COSMOS GENESIS
+            </h1>
+            <p class="text-xs text-purple-300/80">우주 진화 타이쿤 시뮬레이터</p>
+          </div>
+        </div>
+
+        <!-- Big Bang Time Indicator -->
+        <div class="flex items-center space-x-4">
+          <div class="bg-purple-950/50 border border-purple-800/30 px-3 py-1.5 rounded-lg text-right">
+            <span class="block text-[10px] text-purple-400 uppercase tracking-widest">빅뱅 이후 시간</span>
+            <span id="cosmicTime" class="font-orbitron text-sm font-semibold text-pink-300">0.00초 (플랑크 시대)</span>
+          </div>
+          <!-- Reset & Info buttons -->
+          <button id="btnReset" class="p-2 bg-red-950/30 hover:bg-red-900/40 text-red-400 border border-red-900/30 rounded-lg text-sm transition-all" title="우주 붕괴 (초기화)">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Game Body -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- Left Column: Core Generator & Visualizer (5 Cols) -->
+      <section class="lg:col-span-5 flex flex-col gap-6">
+        
+        <!-- Big Energy Generator Card -->
+        <div class="bg-gradient-to-b from-purple-950/40 to-black/80 border border-purple-500/30 rounded-2xl p-6 relative overflow-hidden backdrop-blur-md">
+          <!-- Background decoration -->
+          <div class="absolute -top-24 -left-24 w-48 h-48 bg-purple-600/10 rounded-full blur-3xl"></div>
+          <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-pink-600/10 rounded-full blur-3xl"></div>
+
+          <div class="relative z-10 text-center">
+            <h2 class="text-xs font-semibold text-purple-400 uppercase tracking-widest mb-1">원초적 에너지원</h2>
+            
+            <div class="my-6">
+              <span id="txtEnergy" class="font-orbitron text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-400 to-amber-200 block drop-shadow-sm">0</span>
+              <span class="text-xs text-purple-300 mt-1 block font-orbitron">
+                +<span id="txtEnergyPerSec">0</span> Energy/s
+              </span>
+            </div>
+
+            <!-- Big Clickable Singularity -->
+            <div class="flex justify-center my-8">
+              <button id="btnSingularity" class="group relative w-44 h-44 rounded-full bg-gradient-to-tr from-indigo-900 via-purple-700 to-pink-500 flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-95 focus:outline-none glow-energy">
+                <!-- Outer orbital ring -->
+                <div class="absolute inset-0 border-2 border-dashed border-pink-400/40 rounded-full animate-spin" style="animation-duration: 20s;"></div>
+                <div class="absolute -inset-2 border border-purple-400/20 rounded-full animate-spin" style="animation-duration: 10s; animation-direction: reverse;"></div>
+                <!-- Core sphere -->
+                <div class="w-36 h-36 rounded-full bg-black flex flex-col items-center justify-center p-4 group-hover:bg-purple-950/20 transition-all duration-300">
+                  <i class="fa-solid fa-atom text-4xl text-pink-400 group-hover:scale-110 transition-transform group-hover:rotate-45 duration-500"></i>
+                  <span class="text-xs font-bold text-purple-200 mt-3 font-orbitron tracking-widest group-hover:text-pink-300">SINGULARITY</span>
+                  <span class="text-[10px] text-gray-400 mt-1">클릭하여 에너지 팽창</span>
+                </div>
+              </button>
+            </div>
+
+            <p class="text-xs text-gray-400 italic">"태초에 특이점이 있었고, 거대한 팽창이 시작되었다."</p>
+          </div>
+        </div>
+
+        <!-- Universe Stage Status Card -->
+        <div class="bg-black/60 border border-purple-900/40 rounded-2xl p-5 backdrop-blur-sm">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="text-sm font-semibold text-purple-300 flex items-center gap-2">
+              <i class="fa-solid fa-chart-line text-pink-500"></i> 우주 진화 진행 상황
+            </h3>
+            <span id="txtStagePercent" class="font-orbitron text-xs text-amber-400 font-bold">진행도: 0%</span>
+          </div>
+          
+          <!-- Progress Bar -->
+          <div class="w-full bg-purple-950/50 h-3 rounded-full overflow-hidden mb-4 border border-purple-900/50">
+            <div id="barStage" class="bg-gradient-to-r from-purple-600 via-pink-500 to-amber-400 h-full w-0 transition-all duration-500"></div>
+          </div>
+
+          <!-- Current Epoch Description -->
+          <div class="bg-purple-950/20 border border-purple-900/30 rounded-xl p-3 text-xs leading-relaxed">
+            <span class="font-bold text-purple-400 block mb-1" id="lblEpochTitle">시대 I: 플랑크 & 인플레이션</span>
+            <p id="lblEpochDesc" class="text-gray-300">
+              빅뱅 직후 극도로 뜨겁고 밀도가 높았던 시기입니다. 에너지를 모으고 우주 인플레이션을 촉진하여 최초의 기본 입자들을 탄생시킬 준비를 하세요.
+            </p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Tabs & Control Panel (7 Cols) -->
+      <section class="lg:col-span-7 flex flex-col gap-6">
+        
+        <!-- Category Tabs -->
+        <div class="flex border-b border-purple-900/40 gap-2 bg-black/40 p-1 rounded-xl">
+          <button id="tabBtn1" onclick="switchTab('upgrades')" class="tab-btn flex-1 py-2 px-3 text-xs md:text-sm font-semibold rounded-lg bg-purple-900/40 text-purple-200 border border-purple-700/30 transition-all flex items-center justify-center gap-2">
+            <i class="fa-solid fa-circle-up text-pink-400"></i> 우주 법칙 확장
+          </button>
+          <button id="tabBtn2" onclick="switchTab('particles')" class="tab-btn flex-1 py-2 px-3 text-xs md:text-sm font-semibold rounded-lg hover:bg-purple-950/40 text-purple-400 transition-all flex items-center justify-center gap-2">
+            <i class="fa-solid fa-capsules text-purple-400"></i> 물질 합성
+          </button>
+          <button id="tabBtn3" onclick="switchTab('cosmic')" class="tab-btn flex-1 py-2 px-3 text-xs md:text-sm font-semibold rounded-lg hover:bg-purple-950/40 text-purple-400 transition-all flex items-center justify-center gap-2">
+            <i class="fa-solid fa-sun text-amber-400"></i> 천체 생성
+          </button>
+        </div>
+
+        <!-- Tab Contents -->
+        <!-- Tab 1: Cosmic Rules Upgrades (Energy Buffs) -->
+        <div id="tabContent_upgrades" class="tab-pane flex flex-col gap-4">
+          <div class="flex justify-between items-center">
+            <h3 class="text-sm font-bold text-purple-300">에너지 수집 및 법칙 강화</h3>
+            <span class="text-xs text-gray-400">우주의 팽창 물리 법칙을 영구적으로 강화합니다.</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Click Multiplier -->
+            <div class="bg-black/60 border border-purple-900/30 p-4 rounded-xl flex justify-between items-center gap-4 hover:border-purple-500/30 transition-all">
+              <div class="flex-1">
+                <h4 class="text-sm font-semibold text-purple-200 flex items-center gap-2">
+                  <i class="fa-solid fa-bolt text-yellow-400"></i> 에너지 임팩트
+                </h4>
+                <p class="text-xs text-gray-400 mt-1">클릭 시 에너지 획득량 증가</p>
+                <div class="text-[10px] text-pink-400 font-semibold mt-1">
+                  현재 효과: <span id="effClick">1</span> / 클릭
+                </div>
+              </div>
+              <button id="btnUpClick" class="py-2 px-3 bg-purple-900/40 hover:bg-purple-800 text-xs font-bold rounded-lg border border-purple-700/50 transition-all whitespace-nowrap text-purple-200">
+                강화 <br> <span id="costClick" class="text-amber-300 font-orbitron">10 E</span>
+              </button>
+            </div>
+
+            <!-- Auto Collector 1 -->
+            <div class="bg-black/60 border border-purple-900/30 p-4 rounded-xl flex justify-between items-center gap-4 hover:border-purple-500/30 transition-all">
+              <div class="flex-1">
+                <h4 class="text-sm font-semibold text-purple-200 flex items-center gap-2">
+                  <i class="fa-solid fa-wave-square text-cyan-400"></i> 양자 요동 수집기
+                </h4>
+                <p class="text-xs text-gray-400 mt-1">진공 에너지 무작위 편차 흡수</p>
+                <div class="text-[10px] text-cyan-400 font-semibold mt-1">
+                  보유: <span id="cntCol1">0</span> (+<span id="effCol1">0.2</span> E/s)
+                </div>
+              </div>
+              <button id="btnBuyCol1" class="py-2 px-3 bg-purple-900/40 hover:bg-purple-800 text-xs font-bold rounded-lg border border-purple-700/50 transition-all whitespace-nowrap text-purple-200">
+                구매 <br> <span id="costCol1" class="text-amber-300 font-orbitron">15 E</span>
+              </button>
+            </div>
+
+            <!-- Auto Collector 2 -->
+            <div class="bg-black/60 border border-purple-900/30 p-4 rounded-xl flex justify-between items-center gap-4 hover:border-purple-500/30 transition-all">
+              <div class="flex-1">
+                <h4 class="text-sm font-semibold text-purple-200 flex items-center gap-2">
+                  <i class="fa-solid fa-radiation text-pink-400"></i> 인플레이션 가속
+                </h4>
+                <p class="text-xs text-gray-400 mt-1">시공간 급격한 팽창 에너지 촉진</p>
+                <div class="text-[10px] text-pink-400 font-semibold mt-1">
+                  보유: <span id="cntCol2">0</span> (+<span id="effCol2">2</span> E/s)
+                </div>
+              </div>
+              <button id="btnBuyCol2" class="py-2 px-3 bg-purple-900/40 hover:bg-purple-800 text-xs font-bold rounded-lg border border-purple-700/50 transition-all whitespace-nowrap text-purple-200">
+                구매 <br> <span id="costCol2" class="text-amber-300 font-orbitron">100 E</span>
+              </button>
+            </div>
+
+            <!-- Auto Collector 3 -->
+            <div class="bg-black/60 border border-purple-900/30 p-4 rounded-xl flex justify-between items-center gap-4 hover:border-purple-500/30 transition-all">
+              <div class="flex-1">
+                <h4 class="text-sm font-semibold text-purple-200 flex items-center gap-2">
+                  <i class="fa-solid fa-meteor text-amber-400"></i> 중력 섭동 수신기
+                </h4>
+                <p class="text-xs text-gray-400 mt-1">초기 중력파의 비대칭 에너지 변환</p>
+                <div class="text-[10px] text-amber-400 font-semibold mt-1">
+                  보유: <span id="cntCol3">0</span> (+<span id="effCol3">15</span> E/s)
+                </div>
+              </div>
+              <button id="btnBuyCol3" class="py-2 px-3 bg-purple-900/40 hover:bg-purple-800 text-xs font-bold rounded-lg border border-purple-700/50 transition-all whitespace-nowrap text-purple-200">
+                구매 <br> <span id="costCol3" class="text-amber-300 font-orbitron">800 E</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Particle Synthesis (Matter Synthesis) -->
+        <div id="tabContent_particles" class="tab-pane hidden flex flex-col gap-4">
+          <div class="flex justify-between items-center">
+            <h3 class="text-sm font-bold text-purple-300">기본 입자 및 원자 합성</h3>
+            <span class="text-xs text-purple-400">충분한 원소를 모아야 다음 단계 진화가 가능합니다.</span>
+          </div>
+
+          <div class="space-y-4">
+            
+            <!-- Tier 1: Quark & Electron -->
+            <div class="bg-black/60 border border-purple-900/30 p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-lg bg-pink-900/20 border border-pink-500/40 flex items-center justify-center text-pink-400 text-lg font-bold">
+                  q/e
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-purple-100 flex items-center gap-1.5">
+                    기본 입자 (쿼크 & 전자)
+                  </h4>
+                  <p class="text-xs text-gray-400">우주의 초고온 속에서 생겨난 기초 구성 단위</p>
+                  <div class="text-[11px] text-amber-300 mt-1 font-orbitron">
+                    보유 수량: <span id="cntQuarks" class="font-bold">0</span> 개 (+<span id="prodQuark">0</span>/s)
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="btnSynthesizeQuark" class="py-2 px-3 bg-pink-950/40 hover:bg-pink-900 border border-pink-700/50 text-xs font-bold rounded-lg text-pink-100 whitespace-nowrap transition-all">
+                  합성 <span class="block text-[10px] text-amber-400 font-orbitron" id="costQuark">30 E</span>
+                </button>
+                <button id="btnQuarkAuto" class="py-2 px-3 bg-purple-900/40 hover:bg-purple-800 border border-purple-700/50 text-xs font-bold rounded-lg text-purple-200 whitespace-nowrap transition-all">
+                  자동화 장치 <span class="block text-[10px] text-amber-400 font-orbitron" id="costQuarkAuto">120 E</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Tier 2: Proton & Neutron -->
+            <div class="bg-black/60 border border-purple-900/30 p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-lg bg-cyan-900/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-lg font-bold">
+                  p/n
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-purple-100 flex items-center gap-1.5">
+                    핵자 (양성자 & 중성자)
+                  </h4>
+                  <p class="text-xs text-gray-400">강한 상호작용으로 쿼크가 결합되어 탄생</p>
+                  <div class="text-[11px] text-amber-300 mt-1 font-orbitron">
+                    보유 수량: <span id="cntProtons" class="font-bold">0</span> 개 (+<span id="prodProton">0</span>/s)
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="btnSynthesizeProton" class="py-2 px-3 bg-cyan-950/40 hover:bg-cyan-900 border border-cyan-700/50 text-xs font-bold rounded-lg text-cyan-100 whitespace-nowrap transition-all">
+                  결합 <span class="block text-[10px] text-pink-400" id="costProton">50 Quarks</span>
+                </button>
+                <button id="btnProtonAuto" class="py-2 px-3 bg-purple-900/40 hover:bg-purple-800 border border-purple-700/50 text-xs font-bold rounded-lg text-purple-200 whitespace-nowrap transition-all">
+                  자동 결합기 <span class="block text-[10px] text-pink-400" id="costProtonAuto">200 Quarks</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Tier 3: Hydrogen & Helium Atoms -->
+            <div class="bg-black/60 border border-purple-900/30 p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-lg bg-emerald-900/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-lg font-bold">
+                  H/He
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-purple-100 flex items-center gap-1.5">
+                    원초 원자 (수소 & 헬륨)
+                  </h4>
+                  <p class="text-xs text-gray-400">핵자와 전자가 포획되어 탄생한 우주 최초의 안정한 원자</p>
+                  <div class="text-[11px] text-amber-300 mt-1 font-orbitron">
+                    보유 수량: <span id="cntAtoms" class="font-bold">0</span> 개 (+<span id="prodAtom">0</span>/s)
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="btnSynthesizeAtom" class="py-2 px-3 bg-emerald-950/40 hover:bg-emerald-900 border border-emerald-700/50 text-xs font-bold rounded-lg text-emerald-100 whitespace-nowrap transition-all">
+                  응축 <span class="block text-[10px] text-cyan-400" id="costAtom">100 Protons</span>
+                </button>
+                <button id="btnAtomAuto" class="py-2 px-3 bg-purple-900/40 hover:bg-purple-800 border border-purple-700/50 text-xs font-bold rounded-lg text-purple-200 whitespace-nowrap transition-all">
+                  자동 응축기 <span class="block text-[10px] text-cyan-400" id="costAtomAuto">400 Protons</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Tab 3: Celestial Generation (Stars & Galaxies) -->
+        <div id="tabContent_cosmic" class="tab-pane hidden flex flex-col gap-4">
+          <div class="flex justify-between items-center">
+            <h3 class="text-sm font-bold text-purple-300">우주 천체 생성 및 원소 고도화</h3>
+            <span class="text-xs text-amber-400">중력 붕괴를 유도하여 별과 가스 성운을 탄생시킵니다.</span>
+          </div>
+
+          <!-- Lock overlay if atoms are too low -->
+          <div id="cosmicLock" class="bg-purple-950/20 border border-dashed border-purple-800/60 p-6 rounded-xl text-center">
+            <i class="fa-solid fa-lock text-3xl text-purple-500 mb-3 block"></i>
+            <h4 class="text-sm font-semibold text-purple-300">천체 생성 잠김</h4>
+            <p class="text-xs text-gray-400 mt-1">최소 수소 & 헬륨 원자 <span class="text-emerald-400 font-bold">50개</span>를 먼저 성간 가스로 축적해야 별을 형성할 수 있습니다.</p>
+          </div>
+
+          <!-- Main Celestial Panel (Hidden initially) -->
+          <div id="cosmicPanel" class="hidden space-y-4">
+            
+            <!-- Item 1: First Generation Stars -->
+            <div class="bg-gradient-to-r from-amber-950/20 to-black/80 border border-amber-900/30 p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-amber-500/30 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-400/50 flex items-center justify-center glow-star animate-pulse">
+                  <i class="fa-solid fa-sun text-amber-400 text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-amber-200">초기 질량성 (인구 III 항성)</h4>
+                  <p class="text-xs text-gray-400">수소와 헬륨으로만 이루어진 우주 최초의 무겁고 찬란한 거성</p>
+                  <div class="text-[11px] text-amber-400 mt-1 font-orbitron">
+                    보유 수: <span id="cntStars" class="font-bold">0</span> 개 / 원소 합성속도 <span id="starBonus" class="text-pink-300">+0</span>/s
+                  </div>
+                </div>
+              </div>
+              <button id="btnBuildStar" class="py-2.5 px-4 bg-amber-900/40 hover:bg-amber-800 text-amber-200 border border-amber-700/50 text-xs font-bold rounded-lg transition-all whitespace-nowrap">
+                항성 생성 <span class="block text-[10px] text-emerald-400" id="costStar">50 Atoms</span>
+              </button>
+            </div>
+
+            <!-- Item 2: Stellar Nucleosynthesis (Fusion) -->
+            <div class="bg-gradient-to-r from-teal-950/20 to-black/80 border border-teal-900/30 p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-teal-500/30 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-lg bg-teal-950/30 border border-teal-500/40 flex items-center justify-center text-teal-400 text-xl">
+                  <i class="fa-solid fa-fire-burner"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-teal-200">핵융합 반응 (탄소, 철 생성)</h4>
+                  <p class="text-xs text-gray-400">별의 내부 압력으로 한 단계 무거운 유기 물질 기반 촉진</p>
+                  <div class="text-[11px] text-teal-400 mt-1 font-orbitron">
+                    중원소 농도: <span id="cntHeavyElements" class="font-bold">0</span> mg (+<span id="prodHeavy">0</span> mg/s)
+                  </div>
+                </div>
+              </div>
+              <button id="btnHeavyFusion" class="py-2.5 px-4 bg-teal-900/40 hover:bg-teal-800 text-teal-200 border border-teal-700/50 text-xs font-bold rounded-lg transition-all whitespace-nowrap">
+                탄소-산소 융합 <span class="block text-[10px] text-amber-400" id="costHeavy">별 1개 소모</span>
+              </button>
+            </div>
+
+            <!-- Item 3: Supernova Explosion -->
+            <div class="bg-gradient-to-r from-red-950/20 to-black/80 border border-red-900/30 p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-red-500/30 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-lg bg-red-950/30 border border-red-500/40 flex items-center justify-center text-red-400 text-xl">
+                  <i class="fa-solid fa-burst"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-red-200">초신성 대폭발 (Supernova)</h4>
+                  <p class="text-xs text-gray-400">별의 종말과 동시에 무거운 철 이상의 원소를 우주 공간에 전파</p>
+                  <div class="text-[11px] text-red-400 mt-1 font-orbitron">
+                    성운 성간 먼지: <span id="cntStardust" class="font-bold">0</span> t (+<span id="prodDust">0</span> t/s)
+                  </div>
+                </div>
+              </div>
+              <button id="btnSupernova" class="py-2.5 px-4 bg-red-900/40 hover:bg-red-800 text-red-200 border border-red-700/50 text-xs font-bold rounded-lg transition-all whitespace-nowrap">
+                폭발 트리거 <span class="block text-[10px] text-teal-400" id="costSupernova">중원소 50mg</span>
+              </button>
+            </div>
+
+            <!-- Item 4: Protostellar Disk (Solar System) -->
+            <div class="bg-gradient-to-r from-blue-950/20 to-black/80 border border-blue-900/30 p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-blue-500/30 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-lg bg-blue-950/30 border border-blue-500/40 flex items-center justify-center text-blue-400 text-xl">
+                  <i class="fa-solid fa-earth-asia"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-blue-200">원시 행성계 원반 (행성 형성)</h4>
+                  <p class="text-xs text-gray-400">중금속과 철로 이루어진 단단한 지각을 가진 지구형 원시 행성 생성</p>
+                  <div class="text-[11px] text-blue-400 mt-1 font-orbitron">
+                    생명 가능 행성: <span id="cntPlanets" class="font-bold">0</span> 개
+                  </div>
+                </div>
+              </div>
+              <button id="btnBuildPlanet" class="py-2.5 px-4 bg-blue-900/40 hover:bg-blue-800 text-blue-200 border border-blue-700/50 text-xs font-bold rounded-lg transition-all whitespace-nowrap">
+                행성 수축 <span class="block text-[10px] text-red-400" id="costPlanet">성간먼지 10t</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Visual Interactive Board (Cosmic Log/Milestone) -->
+    <section class="max-w-7xl w-full mx-auto p-4 mb-8">
+      <div class="bg-gradient-to-r from-purple-950/20 to-black/90 border border-purple-900/30 rounded-2xl p-6">
+        <h3 class="text-sm font-bold text-purple-300 mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-compass-drafting text-pink-400"></i> 우주 발전 로그 및 이정표
+        </h3>
+        
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
+          <div class="bg-black/40 border border-purple-900/20 p-3 rounded-xl text-center">
+            <span class="block text-[10px] text-gray-400 uppercase">인플레이션 가중치</span>
+            <span id="statMulti" class="font-orbitron font-bold text-purple-300 text-sm">x1.0</span>
+          </div>
+          <div class="bg-black/40 border border-purple-900/20 p-3 rounded-xl text-center">
+            <span class="block text-[10px] text-gray-400 uppercase">에너지 누적 합계</span>
+            <span id="statTotalEnergy" class="font-orbitron font-bold text-pink-300 text-sm">0 E</span>
+          </div>
+          <div class="bg-black/40 border border-purple-900/20 p-3 rounded-xl text-center">
+            <span class="block text-[10px] text-gray-400 uppercase">물질 합성 다양성</span>
+            <span id="statSyntheses" class="font-orbitron font-bold text-cyan-300 text-sm">0/4</span>
+          </div>
+          <div class="bg-black/40 border border-purple-900/20 p-3 rounded-xl text-center">
+            <span class="block text-[10px] text-gray-400 uppercase">보유 항성 및 성운</span>
+            <span id="statStars" class="font-orbitron font-bold text-amber-300 text-sm">0 개</span>
+          </div>
+        </div>
+
+        <div class="bg-black/80 rounded-xl p-4 border border-purple-950 h-32 overflow-y-auto" id="logBox">
+          <p class="text-xs text-purple-400/80">[0.00초] 특이점이 폭발하여 에너지가 팽창하기 시작했습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-purple-900/20 bg-black/80 px-4 py-4 text-center text-xs text-purple-400/60 z-10 relative">
+      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+        <p>© 2026 Cosmos Genesis. 우주의 시간은 여러분이 지배합니다.</p>
+        <p class="font-orbitron text-[11px] text-pink-500/80">Made with cosmic background radiation</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Sound simulation or Visual effect trigger scripts -->
+  <script>
+    // Game State Object
+    let state = {
+      energy: 0,
+      totalEnergyEarned: 0,
+      clickPower: 1,
+      cosmicTime: 0, // In pseudo-seconds or real time elapsed
+      stage: 1, // 1: Inflation, 2: Quark Era, 3: Atomic Era, 4: Cosmic Dawn
+      
+      // Upgrade Quantities
+      upClickLevel: 1,
+      col1Count: 0,
+      col2Count: 0,
+      col3Count: 0,
+      
+      // Matter Quantities
+      quarks: 0,
+      protons: 0,
+      atoms: 0,
+      
+      // Auto Matter Builders
+      quarkAutoCount: 0,
+      protonAutoCount: 0,
+      atomAutoCount: 0,
+      
+      // Celestials
+      stars: 0,
+      heavyElements: 0,
+      stardust: 0,
+      planets: 0
+    };
+
+    // Constant parameters
+    const baseCosts = {
+      clickUp: 10,
+      col1: 15,
+      col2: 100,
+      col3: 800,
+      quark: 30,
+      quarkAuto: 120,
+      proton: 50,
+      protonAuto: 200,
+      atom: 100,
+      atomAuto: 400,
+      star: 50,
+      heavy: 1, // star
+      supernova: 50, // heavy
+      planet: 10 // dust
+    };
+
+    // Costs scale multiplier
+    const scaleFactor = 1.15;
+
+    // Background Particle generation (Dust)
+    const dustContainer = document.getElementById('dustContainer');
+    function createDust() {
+      for(let i=0; i < 40; i++) {
+        let dust = document.createElement('div');
+        dust.className = 'absolute bg-white rounded-full';
+        let size = Math.random() * 2 + 1;
+        dust.style.width = size + 'px';
+        dust.style.height = size + 'px';
+        dust.style.left = Math.random() * 100 + '%';
+        dust.style.top = Math.random() * 100 + '%';
+        dust.style.opacity = Math.random() * 0.5 + 0.1;
+        // Animation
+        dust.style.animation = `drift ${Math.random() * 30 + 15}s linear infinite`;
+        dustContainer.appendChild(dust);
+      }
+    }
+    createDust();
+
+    // Utility: Round display values elegantly
+    function f(val) {
+      if (val >= 1000000) {
+        return (val / 1000000).toFixed(2) + 'M';
+      }
+      if (val >= 1000) {
+        return (val / 1000).toFixed(1) + 'K';
+      }
+      return Math.floor(val);
+    }
+
+    // Tab Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('bg-purple-900/40', 'text-purple-200', 'border', 'border-purple-700/30');
+        b.classList.add('text-purple-400');
+      });
+
+      document.getElementById(`tabContent_${tabId}`).classList.remove('hidden');
+      event.currentTarget.classList.add('bg-purple-900/40', 'text-purple-200', 'border', 'border-purple-700/30');
+    }
+
+    // Logger Utility
+    function addLog(text) {
+      const logBox = document.getElementById('logBox');
+      const timeStr = state.cosmicTime.toFixed(2);
+      const logMsg = document.createElement('p');
+      logMsg.className = 'text-xs text-gray-300 mt-1 border-l-2 border-purple-500 pl-2 py-0.5';
+      logMsg.innerHTML = `[${timeStr}초] ${text}`;
+      logBox.appendChild(logMsg);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    // Calculate Costs dynamically
+    function getClickCost() { return Math.floor(baseCosts.clickUp * Math.pow(1.2, state.upClickLevel - 1)); }
+    function getCol1Cost() { return Math.floor(baseCosts.col1 * Math.pow(scaleFactor, state.col1Count)); }
+    function getCol2Cost() { return Math.floor(baseCosts.col2 * Math.pow(scaleFactor, state.col2Count)); }
+    function getCol3Cost() { return Math.floor(baseCosts.col3 * Math.pow(scaleFactor, state.col3Count)); }
+
+    function getQuarkAutoCost() { return Math.floor(baseCosts.quarkAuto * Math.pow(scaleFactor, state.quarkAutoCount)); }
+    function getProtonAutoCost() { return Math.floor(baseCosts.protonAuto * Math.pow(scaleFactor, state.protonAutoCount)); }
+    function getAtomAutoCost() { return Math.floor(baseCosts.atomAuto * Math.pow(scaleFactor, state.atomAutoCount)); }
+    
+    function getStarCost() { return Math.floor(baseCosts.star * Math.pow(1.12, state.stars)); }
+    function getPlanetCost() { return Math.floor(baseCosts.planet * Math.pow(1.15, state.planets)); }
+
+    // Core Click Action
+    document.getElementById('btnSingularity').addEventListener('click', (e) => {
+      let earned = state.clickPower;
+      state.energy += earned;
+      state.totalEnergyEarned += earned;
+      updateUI();
+      
+      // Floating text effect
+      createFloatingText(`+${earned} E`, e.clientX, e.clientY);
+    });
+
+    function createFloatingText(text, x, y) {
+      if (!x || !y) return;
+      const t = document.createElement('div');
+      t.className = 'absolute font-orbitron text-sm font-bold text-pink-400 pointer-events-none z-50';
+      t.style.left = `${x}px`;
+      t.style.top = `${y}px`;
+      t.innerText = text;
+      document.body.appendChild(t);
+
+      // Animate out
+      let start = Date.now();
+      let timer = setInterval(() => {
+        let elapsed = Date.now() - start;
+        if (elapsed > 800) {
+          clearInterval(timer);
+          t.remove();
+        } else {
+          t.style.transform = `translateY(-${elapsed / 10}px)`;
+          t.style.opacity = 1 - (elapsed / 800);
+        }
+      }, 16);
+    }
+
+    // Upgrades Purchases
+    document.getElementById('btnUpClick').addEventListener('click', () => {
+      let cost = getClickCost();
+      if (state.energy >= cost) {
+        state.energy -= cost;
+        state.upClickLevel++;
+        state.clickPower = Math.floor(1 + (state.upClickLevel - 1) * 1.5 + (state.col1Count * 0.1));
+        addLog(`우주의 국소 에너지 임팩트가 증가했습니다. (클릭 파워: ${state.clickPower})`);
+        updateUI();
+      }
+    });
+
+    document.getElementById('btnBuyCol1').addEventListener('click', () => {
+      let cost = getCol1Cost();
+      if (state.energy >= cost) {
+        state.energy -= cost;
+        state.col1Count++;
+        addLog(`양자 요동 수집기를 확보했습니다. 우주 공허에서 자발적인 에너지 파동이 결집합니다.`);
+        updateUI();
+      }
+    });
+
+    document.getElementById('btnBuyCol2').addEventListener('click', () => {
+      let cost = getCol2Cost();
+      if (state.energy >= cost) {
+        state.energy -= cost;
+        state.col2Count++;
+        addLog(`인플레이션 팽창 계수를 증가시켰습니다. 생성 에너지가 대폭 확장됩니다.`);
+        updateUI();
+      }
+    });
+
+    document.getElementById('btnBuyCol3').addEventListener('click', () => {
+      let cost = getCol3Cost();
+      if (state.energy >= cost) {
+        state.energy -= cost;
+        state.col3Count++;
+        addLog(`시공간 왜곡 속에서 중력 섭동 수신장치가 가동됩니다.`);
+        updateUI();
+      }
+    });
+
+    // Particle Synthesis Actions
+    document.getElementById('btnSynthesizeQuark').addEventListener('click', () => {
+      if (state.energy >= baseCosts.quark) {
+        state.energy -= baseCosts.quark;
+        state.quarks++;
+        updateUI();
+      }
+    });
+
+    document.getElementById('btnQuarkAuto').addEventListener('click', () => {
+      let cost = getQuarkAutoCost();
+      if (state.energy >= cost) {
+        state.energy -= cost;
+        state.quarkAutoCount++;
+        addLog(`에너지를 통해 기본 입자(쿼크/전자)를 생산하는 입자 붕괴 가속기가 자율 가동됩니다.`);
+        updateUI();
+      }
+    });
+
+    document.getElementById('btnSynthesizeProton').addEventListener('click', () => {
+      if (state.quarks >= baseCosts.proton) {
+        state.quarks -= baseCosts.proton;
+        state.protons++;
+        updateUI();
+      }
+    });
+
+    document.getElementById('btnProtonAuto').addEventListener('click', () => {
+      let cost = getProtonAutoCost();
+      if (state.quarks >= cost) {
+        state.quarks -= cost;
+        state.protonAutoCount++;
+        addLog(`양성자/중성자 강상호작용 자율 결합 융합체가 건설되었습니다.`);
+        updateUI();
+      }
+    });
+
+    document.getElementById('btnSynthesizeAtom').addEventListener('click', () => {
+      if (state.protons >= baseCosts.atom) {
+        state.protons -= baseCosts.atom;
+        state.atoms++;
+        updateUI();
+      }
+    });
+
+    document.getElementById('btnAtomAuto').addEventListener('click', () => {
+      let cost = getAtomAutoCost();
+      if (state.protons >= cost) {
+        state.protons -= cost;
+        state.atomAutoCount++;
+        addLog(`양성자와 무작위 고주파 전자를 응축시켜 수소 및 헬륨 원자를 형성하는 대형 정전기 응축망 구축.`);
+        updateUI();
+      }
+    });
+
+    // Celestial Action Items
+    document.getElementById('btnBuildStar').addEventListener('click', () => {
+      let cost = getStarCost();
+      if (state.atoms >= cost) {
+        state.atoms -= cost;
+        state.stars++;
+        addLog(`대량의 성간 물질이 중력으로 급속 붕괴되었습니다. 인구 III 형태의 최초 별(항성)이 점화되었습니다!`);
+        updateUI();
+      }
+    });
+
+    document.getElementById('btnHeavyFusion').addEventListener('click', () => {
+      if (state.stars >= 1) {
+        state.stars -= 1;
+        state.heavyElements += 10;
+        addLog(`성공적으로 별 한 개를 주계열성 단계에서 밀어붙여, 탄소/산소/규소 등의 무거운 중원소를 합성해냈습니다.`);
+        updateUI();
+      }
+    });
+
+    document.getElementById('btnSupernova').addEventListener('click', () => {
+      if (state.heavyElements >= baseCosts.supernova) {
+        state.heavyElements -= baseCosts.supernova;
+        state.stardust += 5;
+        addLog(`초신성이 폭발하며 무시무시한 에너지를 발산하고, 사방으로 광활한 성운 먼지(Stardust)를 성간 매질에 흩뿌립니다.`);
+        updateUI();
+      }
+    });
+
+    document.getElementById('btnBuildPlanet') .addEventListener('click', () => {
+      let cost = getPlanetCost();
+      if (state.stardust >= cost) {
+        state.stardust -= cost;
+        state.planets++;
+        addLog(`성운 원반 먼지가 응축되어 단단한 금속 중심핵과 규산염 지각을 지닌 생명 가능대 행성이 무작위로 안착했습니다.`);
+        updateUI();
+      }
+    });
+
+    // Calculate dynamic stages and percentages
+    function updateStageAndStats() {
+      // Stage determinations
+      let totalSynthesized = (state.quarks > 0 ? 1 : 0) + (state.protons > 0 ? 1 : 0) + (state.atoms > 0 ? 1 : 0) + (state.heavyElements > 0 ? 1 : 0);
+      document.getElementById('statSyntheses').innerText = `${totalSynthesized}/4`;
+      
+      let cosmicObjects = state.stars + state.planets;
+      document.getElementById('statStars').innerText = `${cosmicObjects} 개`;
+
+      let progress = 0;
+      if (state.stage === 1) {
+        progress = Math.min(100, (state.totalEnergyEarned / 500) * 100);
+        if (state.totalEnergyEarned >= 500) {
+          state.stage = 2;
+          addLog("축하합니다! 우주가 식어가며 대통합 시기에서 벗어나 강력한 중력과 결합해 '기본 입자의 시대'로 진입합니다.");
+        }
+      } else if (state.stage === 2) {
+        progress = Math.min(100, (state.quarks / 100) * 100);
+        if (state.quarks >= 100) {
+          state.stage = 3;
+          addLog("우주의 온도가 약 1조도까지 내려갔습니다! 쿼크들이 단단히 결합하는 '원자핵 및 물질 생성 시대'가 도래합니다.");
+        }
+      } else if (state.stage === 3) {
+        progress = Math.min(100, (state.atoms / 50) * 100);
+        if (state.atoms >= 50) {
+          state.stage = 4;
+          addLog("우주배경복사가 사방으로 퍼지고 우주가 드디어 투명해졌습니다! 가스 구름이 뭉쳐서 우주를 밝힐 '우주의 여명(Cosmic Dawn) 항성기'가 활성화됩니다.");
+        }
+      } else if (state.stage === 4) {
+        progress = Math.min(100, (state.planets / 5) * 100);
+        if (state.planets >= 5) {
+          state.stage = 5;
+          addLog("행성들과 가스 왜성이 완전한 은하계 균형을 맞췄습니다. 고도로 발달된 지성체가 출현하기 적합한 진화 환경이 구축되었습니다.");
+        }
+      } else {
+        progress = 100;
+      }
+
+      // Render Stage Info
+      const stagePercentElem = document.getElementById('txtStagePercent');
+      const barStageElem = document.getElementById('barStage');
+      const lblEpochTitle = document.getElementById('lblEpochTitle');
+      const lblEpochDesc = document.getElementById('lblEpochDesc');
+
+      stagePercentElem.innerText = `현재 진화 단계: ${Math.floor(progress)}%`;
+      barStageElem.style.width = `${progress}%`;
+
+      if (state.stage === 1) {
+        lblEpochTitle.innerText = "시대 I: 플랑크 & 인플레이션";
+        lblEpochDesc.innerText = "빅뱅 직후 극도로 뜨겁고 밀도가 높았던 시기입니다. 우주 에너지를 수집하여 시공간을 급격히 팽창시키고 입자 형성 기초를 놓아야 합니다.";
+      } else if (state.stage === 2) {
+        lblEpochTitle.innerText = "시대 II: 기본 입자들의 바다 (Quark Era)";
+        lblEpochDesc.innerText = "쿼크와 전자가 마구 요동칩니다! 에너지를 소모하여 물질을 형성할 아주 극미한 최초의 입자들을 정밀 추출하십시오.";
+      } else if (state.stage === 3) {
+        lblEpochTitle.innerText = "시대 III: 원자핵 및 원소 탄생 (Nucleosynthesis)";
+        lblEpochDesc.innerText = "우주가 식으면서 드디어 원소들이 안정적으로 머물 수 있습니다. 양성자와 전자가 상호 포획하여 수소 및 헬륨 가스를 응집해야 합니다.";
+      } else if (state.stage === 4) {
+        lblEpochTitle.innerText = "시대 IV: 우주의 여명 (Cosmic Dawn)";
+        lblEpochDesc.innerText = "암흑에서 최초의 빛이 비춥니다. 수소 가스가 축적되면 우측 세 번째 탭의 천체 생성 잠금이 풀리고, 최초의 별들을 점화할 수 있습니다.";
+      } else {
+        lblEpochTitle.innerText = "시대 V: 생명의 탄생과 대항해";
+        lblEpochDesc.innerText = "철과 유기 성운 먼지에서 시작된 고체형 지각 행성이 형성되었습니다. 최초의 단세포 생물체가 원시 대양에서 고개를 내밀 준비를 합니다.";
+      }
+
+      // Handle lock/unlock of Cosmic Tab
+      const lockElem = document.getElementById('cosmicLock');
+      const panelElem = document.getElementById('cosmicPanel');
+      if (state.atoms >= 50 || state.stars > 0 || state.planets > 0) {
+        lockElem.classList.add('hidden');
+        panelElem.classList.remove('hidden');
+      } else {
+        lockElem.classList.remove('hidden');
+        panelElem.classList.add('hidden');
+      }
+    }
+
+    // Main Update Function
+    function updateUI() {
+      // General stats
+      document.getElementById('txtEnergy').innerText = f(state.energy);
+      document.getElementById('statTotalEnergy').innerText = `${f(state.totalEnergyEarned)} E`;
+
+      // Upgrades 비용 & 버튼 상태
+      const costClick = getClickCost();
+      document.getElementById('costClick').innerText = `${f(costClick)} E`;
+      document.getElementById('effClick').innerText = state.clickPower;
+      toggleBtnState('btnUpClick', state.energy >= costClick);
+
+      const costCol1 = getCol1Cost();
+      document.getElementById('costCol1').innerText = `${f(costCol1)} E`;
+      document.getElementById('cntCol1').innerText = state.col1Count;
+      document.getElementById('effCol1').innerText = (state.col1Count * 0.2).toFixed(1);
+      toggleBtnState('btnBuyCol1', state.energy >= costCol1);
+
+      const costCol2 = getCol2Cost();
+      document.getElementById('costCol2').innerText = `${f(costCol2)} E`;
+      document.getElementById('cntCol2').innerText = state.col2Count;
+      document.getElementById('effCol2').innerText = (state.col2Count * 2);
+      toggleBtnState('btnBuyCol2', state.energy >= costCol2);
+
+      const costCol3 = getCol3Cost();
+      document.getElementById('costCol3').innerText = `${f(costCol3)} E`;
+      document.getElementById('cntCol3').innerText = state.col3Count;
+      document.getElementById('effCol3').innerText = (state.col3Count * 15);
+      toggleBtnState('btnBuyCol3', state.energy >= costCol3);
+
+      // Particle Synthesis UI
+      document.getElementById('cntQuarks').innerText = f(state.quarks);
+      document.getElementById('costQuark').innerText = `${baseCosts.quark} E`;
+      toggleBtnState('btnSynthesizeQuark', state.energy >= baseCosts.quark);
+
+      const costQuarkAuto = getQuarkAutoCost();
+      document.getElementById('costQuarkAuto').innerText = `${f(costQuarkAuto)} E`;
+      toggleBtnState('btnQuarkAuto', state.energy >= costQuarkAuto);
+
+      document.getElementById('cntProtons').innerText = f(state.protons);
+      document.getElementById('costProton').innerText = `${baseCosts.proton} Quarks`;
+      toggleBtnState('btnSynthesizeProton', state.quarks >= baseCosts.proton);
+
+      const costProtonAuto = getProtonAutoCost();
+      document.getElementById('costProtonAuto').innerText = `${f(costProtonAuto)} Quarks`;
+      toggleBtnState('btnProtonAuto', state.quarks >= costProtonAuto);
+
+      document.getElementById('cntAtoms').innerText = f(state.atoms);
+      document.getElementById('costAtom').innerText = `${baseCosts.atom} Protons`;
+      toggleBtnState('btnSynthesizeAtom', state.protons >= baseCosts.atom);
+
+      const costAtomAuto = getAtomAutoCost();
+      document.getElementById('costAtomAuto').innerText = `${f(costAtomAuto)} Protons`;
+      toggleBtnState('btnAtomAuto', state.protons >= costAtomAuto);
+
+      // Celestial items UI
+      const starCost = getStarCost();
+      document.getElementById('costStar').innerText = `${f(starCost)} Atoms`;
+      document.getElementById('cntStars').innerText = state.stars;
+      document.getElementById('starBonus').innerText = state.stars * 5;
+      toggleBtnState('btnBuildStar', state.atoms >= starCost);
+
+      document.getElementById('cntHeavyElements').innerText = state.heavyElements;
+      toggleBtnState('btnHeavyFusion', state.stars >= 1);
+
+      document.getElementById('cntStardust').innerText = state.stardust;
+      toggleBtnState('btnSupernova', state.heavyElements >= baseCosts.supernova);
+
+      const planetCost = getPlanetCost();
+      document.getElementById('costPlanet').innerText = `${f(planetCost)} t`;
+      document.getElementById('cntPlanets').innerText = state.planets;
+      toggleBtnState('btnBuildPlanet', state.stardust >= planetCost);
+
+      // Speed rates calculator for dashboard
+      let totalInflow = (state.col1Count * 0.2) + (state.col2Count * 2) + (state.col3Count * 15);
+      document.getElementById('txtEnergyPerSec').innerText = totalInflow.toFixed(1);
+      
+      // Secondary particle automation rate displays
+      document.getElementById('prodQuark').innerText = state.quarkAutoCount;
+      document.getElementById('prodProton').innerText = state.protonAutoCount;
+      document.getElementById('prodAtom').innerText = state.atomAutoCount;
+
+      document.getElementById('prodHeavy').innerText = state.stars * 2;
+      document.getElementById('prodDust').innerText = Math.floor(state.heavyElements / 10);
+
+      // Dynamic Time Display
+      document.getElementById('cosmicTime').innerText = `${state.cosmicTime.toFixed(2)}초`;
+
+      updateStageAndStats();
+    }
+
+    function toggleBtnState(id, canAfford) {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      if (canAfford) {
+        btn.removeAttribute('disabled');
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+      } else {
+        btn.setAttribute('disabled', 'true');
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    // Auto loop (runs every 100ms)
+    setInterval(() => {
+      // Delta Time in fractional seconds
+      let dt = 0.1; 
+      state.cosmicTime += dt;
+
+      // Energy generation
+      let autoEnergy = (state.col1Count * 0.2) + (state.col2Count * 2) + (state.col3Count * 15);
+      state.energy += autoEnergy * dt;
+      state.totalEnergyEarned += autoEnergy * dt;
+
+      // Matter automations
+      state.quarks += state.quarkAutoCount * dt;
+      state.protons += state.protonAutoCount * dt;
+      state.atoms += state.atomAutoCount * dt;
+
+      // Heavy element slowly increases if stars exist
+      if (state.stars > 0) {
+        state.heavyElements += (state.stars * 2) * dt;
+      }
+
+      // Heavy elements naturally break down to cosmic dust slightly over time
+      if (state.heavyElements >= 10) {
+        let decay = Math.floor(state.heavyElements / 10);
+        state.heavyElements -= decay * dt;
+        state.stardust += (decay * 0.5) * dt;
+      }
+
+      updateUI();
+    }, 100);
+
+    // Save/Reset logic
+    document.getElementById('btnReset').addEventListener('click', () => {
+      if (confirm('우주를 대붕괴(Big Crunch) 시키고 완벽하게 초기 상태의 에너지를 마주하시겠습니까? 처음부터 다시 시작합니다.')) {
+        state = {
+          energy: 0,
+          totalEnergyEarned: 0,
+          clickPower: 1,
+          cosmicTime: 0,
+          stage: 1,
+          upClickLevel: 1,
+          col1Count: 0,
+          col2Count: 0,
+          col3Count: 0,
+          quarks: 0,
+          protons: 0,
+          atoms: 0,
+          quarkAutoCount: 0,
+          protonAutoCount: 0,
+          atomAutoCount: 0,
+          stars: 0,
+          heavyElements: 0,
+          stardust: 0,
+          planets: 0
+        };
+        addLog("우주가 하나의 한 점으로 수축하여 우주의 모든 구성원들이 완벽히 붕괴하였습니다.");
+        updateUI();
+      }
+    });
+
+    // Start logs
+    addLog("무한한 밀도의 한 점에서 급격한 확장이 일어났습니다. 에너지를 수집하여 인플레이션 우주를 추진하십시오.");
+    updateUI();
+  </script>
+</body>
+</html>
